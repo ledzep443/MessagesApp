@@ -25,6 +25,7 @@ namespace Models
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Password and confirm password do not match")]
         public string ConfirmPassword { get; set; }
+        public string PhoneNumber { get; set; }
         
         public string Role { get; set; }
 
