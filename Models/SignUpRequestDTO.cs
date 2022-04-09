@@ -25,10 +25,10 @@ namespace Models
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Password and confirm password do not match")]
         public string ConfirmPassword { get; set; }
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
         
-        public string Role { get; set; }
+        public string? Role { get; set; }
 
-        public DateOnly HireDate { get; set; }
+        public DateTime HireDate { get; set; }
     }
 }

@@ -10,10 +10,10 @@
                         <h3 class="col-12 text-success text-center py-2">
                             <strong>Sign Up</strong>
                         </h3>
-                        @if (ShowRegisterErrors)
+                        @if (ShowRegistrationErrors)
                         {
                             <div>
-                            foreach (var error in Errors)
+                            @foreach (var error in Errors)
                             {
                                 <p class="text-danger text-center">@error</p>
                             }
@@ -35,6 +35,10 @@
                             <InputText @bind-Value="SignUpRequest.PhoneNumber" class="form-control" placeholder="Phone number..." />
                             <ValidationMessage For="(() => SignUpRequest.PhoneNumber)" />
                         </div>
+                        <div class="py-2">
+                            <InputDate @bind-Value="SignUpRequest.HireDate" class="form-control" />
+                            <ValidationMessage For="(() => SignUpRequest.HireDate.Date)" />
+                        </div>
                         <div class="form-row py-2">
                             <div class="col">
                                 <InputText @bind-Value="SignUpRequest.Password" type="password" id="password" placeholder="Password..." class="form-control" />
@@ -48,7 +52,6 @@
                         <hr style="background-color: aquamarine;" />
                         <div class="py-2 text-center">
                             <button type="submit" class="btn btn-success btn-block"><i class="bi bi-person-fill"></i>Register</button>
-                            <a href="/login" class="btn btn-primary btn-block"><i class="bi bi-person-badge"></i> Login</a>
                         </div>
                     </div>
                 </div>

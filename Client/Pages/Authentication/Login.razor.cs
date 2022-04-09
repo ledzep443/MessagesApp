@@ -39,7 +39,7 @@ namespace Client.Pages.Authentication
             {
                 //If login fails
                 ShowSignInErrors = true;
-                Errors = result.ErrorMessage;
+                Errors = result.Error;
             }
             IsProcessing = false;
         }

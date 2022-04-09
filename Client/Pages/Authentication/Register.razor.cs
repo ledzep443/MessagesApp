@@ -1,7 +1,7 @@
 ﻿using Client.Service.IService;
 using Microsoft.AspNetCore.Components;
 using Models;
-using System.Web;
+
 
 namespace Client.Pages.Authentication
 {
@@ -9,7 +9,7 @@ namespace Client.Pages.Authentication
     {
         private SignUpRequestDTO SignUpRequest { get; set; } = new();
         public bool IsProcessing { get; set; } = false;
-        public bool ShowRegisterErrors { get; set; }
+        public bool ShowRegistrationErrors { get; set; }
         public IEnumerable<string> Errors { get; set; }
 
         [Inject]
@@ -18,8 +18,10 @@ namespace Client.Pages.Authentication
         public NavigationManager _navigationManager { get; set; }
         private async Task RegisterUser()
         {
-            ShowRegisterErrors = false;
+            ShowRegistrationErrors = false;
             IsProcessing = true;
+            //SignUpRequest.HireDate = DateTime.Today;
+            
             var result = await _authService.SignUp(SignUpRequest);
             if (result.IsRegistrationSuccessful)
             {
@@ -30,7 +32,7 @@ namespace Client.Pages.Authentication
             {
                 //Registration is not successful, show errors
                 Errors = result.Errors;
-                ShowRegisterErrors = true;
+                ShowRegistrationErrors = true;
             }
             IsProcessing = false;
         }

@@ -86,7 +86,7 @@ namespace API.Controllers
                     return Unauthorized(new SignInResponseDTO
                     {
                         IsSignInSuccessful = false,
-                        ErrorMessage = "Invalid Authentication"
+                        Error = "Invalid authentication"
                     });
                 }
 
@@ -112,7 +112,8 @@ namespace API.Controllers
                         Name = user.Name,
                         Id = user.Id,
                         Email = user.Email,
-                        HireDate = user.HireDate
+                        HireDate = user.HireDate,
+                        Role = "Developer"
                     }
                 });
             }
@@ -121,7 +122,7 @@ namespace API.Controllers
                 return Unauthorized(new SignInResponseDTO
                 {
                     IsSignInSuccessful = false,
-                    ErrorMessage = "Invalid Authentication"
+                    Error = "Invalid Authentication"
                 });
             }
 
