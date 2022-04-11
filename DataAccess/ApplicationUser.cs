@@ -10,6 +10,6 @@ namespace DataAccess
     public class ApplicationUser : IdentityUser
     {
         public string Name { get; set; }
-        public DateOnly HireDate { get; set; }
+        public string HireDate { get; set; }
     }
 }

@@ -29,6 +29,6 @@ namespace Models
         
         public string? Role { get; set; }
 
-        public DateTime HireDate { get; set; }
+        public string HireDate { get; set; }
     }
 }

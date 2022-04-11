@@ -35,7 +35,7 @@ namespace Client.Pages.Authentication
         {
             ShowRegistrationErrors = false;
             IsProcessing = true;
-            SignUpRequest.HireDate = DateTime.Today;
+            SignUpRequest.HireDate = DateTime.Today.ToString();
             SignUpRequest.Role = "User";
             
             var result = await _authService.SignUp(SignUpRequest);

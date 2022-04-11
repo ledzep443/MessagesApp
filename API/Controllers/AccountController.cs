@@ -56,15 +56,35 @@ namespace API.Controllers
                 });
             }
 
+            var roleExists = _roleManager.RoleExistsAsync(signUpRequest.Role).Result;
+            
+            if(!roleExists)
+            {
+                var role = new IdentityRole
+                {
+                    Name = signUpRequest.Role
+                };
+                await _roleManager.CreateAsync(role);
+            }
             var roleResult = await _userManager.AddToRoleAsync(user, signUpRequest.Role);
             if (!roleResult.Succeeded)
             {
+
                 return BadRequest(new SignUpResponseDTO()
                 {
                     IsRegistrationSuccessful = false,
                     Errors = roleResult.Errors.Select(u => u.Description)
                 });
             }
+            else
+            {
+                return Ok(new SignUpResponseDTO()
+                {
+                    IsRegistrationSuccessful = true
+                });
+            }
+
+
             return StatusCode(201);
         }
 
