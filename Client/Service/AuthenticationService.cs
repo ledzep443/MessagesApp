@@ -4,6 +4,7 @@ using Models;
 using Newtonsoft.Json;
 using System.Text;
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Client.Service
 {
@@ -11,9 +12,9 @@ namespace Client.Service
     {
         private readonly HttpClient _client;
         private readonly ILocalStorageService _localStorage;
-        private readonly AuthStateProvider _authStateProvider;
+        private readonly AuthenticationStateProvider _authStateProvider;
 
-        public AuthenticationService(HttpClient client, ILocalStorageService localStorage, AuthStateProvider authStateProvider)
+        public AuthenticationService(HttpClient client, ILocalStorageService localStorage, AuthenticationStateProvider authStateProvider)
         {
             _client = client;
             _localStorage = localStorage;
@@ -29,7 +30,7 @@ namespace Client.Service
             var contentTemp = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<SignInResponseDTO>(contentTemp);
 
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && result != null)
             {
                 await _localStorage.SetItemAsync("JWT Token", result.Token);
                 await _localStorage.SetItemAsync("UserDetails", result.UserDTO);
@@ -39,7 +40,9 @@ namespace Client.Service
             }
             else
             {
-                return result;
+
+                return new SignInResponseDTO() { IsSignInSuccessful= false };
+
             }
         }
 
@@ -61,17 +64,19 @@ namespace Client.Service
             var contentTemp = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<ChangePasswordResponseDTO>(contentTemp);
 
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && result != null)
             {
                 return new ChangePasswordResponseDTO() { IsPasswordSuccessfullyChanged = true };
             }
             else
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 return new ChangePasswordResponseDTO()
                 {
                     IsPasswordSuccessfullyChanged = false,
                     Errors = result.Errors
                 };
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
         }
 
@@ -83,13 +88,17 @@ namespace Client.Service
             var bodyTemp = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<SignUpResponseDTO>(bodyTemp);
 
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && result != null)
             {
                 return new SignUpResponseDTO { IsRegistrationSuccessful = true };
             }
             else
             {
-                return new SignUpResponseDTO { IsRegistrationSuccessful = false, Errors = result.Errors };
+
+                return new SignUpResponseDTO { 
+                    IsRegistrationSuccessful = false, 
+                    /*Errors = result?.Errors*/ };
+
             }
         }
     }

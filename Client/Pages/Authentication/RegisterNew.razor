@@ -1,4 +1,4 @@
-﻿@page "/register"
+﻿@page "/registernew"
 
 <EditForm Model="SignUpRequest" OnValidSubmit="RegisterUser" class="pt-4">
     <DataAnnotationsValidator />
@@ -35,10 +35,10 @@
                             <InputText @bind-Value="SignUpRequest.PhoneNumber" class="form-control" placeholder="Phone number..." />
                             <ValidationMessage For="(() => SignUpRequest.PhoneNumber)" />
                         </div>
-                        @*<div class="py-2">
+                        <div class="py-2">
                             <InputDate @bind-Value="SignUpRequest.HireDate" class="form-control" />
                             <ValidationMessage For="(() => SignUpRequest.HireDate.Date)" />
-                        </div>*@
+                        </div>
                         <div class="form-row py-2">
                             <div class="col">
                                 <InputText @bind-Value="SignUpRequest.Password" type="password" id="password" placeholder="Password..." class="form-control" />
@@ -60,6 +60,32 @@
     </div>
 </EditForm>
 
+@inject IAuthenticationService authService
+@inject NavigationManager navManager
 @code {
+    private SignUpRequestDTO SignUpRequest { get; set; } = new();
+    public bool IsProcessing { get; set; } = false;
+    public bool ShowRegistrationErrors { get; set; }
+    public IEnumerable<string>? Errors { get; set; }
 
+     private async Task RegisterUser()
+        {
+            ShowRegistrationErrors = false;
+            IsProcessing = true;
+            //SignUpRequest.HireDate = DateTime.Today;
+            
+            var result = await authService.SignUp(SignUpRequest);
+            if (result.IsRegistrationSuccessful)
+            {
+                //Registration is successful, redirect to login
+                navManager.NavigateTo("/login");
+            }
+            else
+            {
+                //Registration is not successful, show errors
+                Errors = result.Errors;
+                ShowRegistrationErrors = true;
+            }
+            IsProcessing = false;
+        }
 }
