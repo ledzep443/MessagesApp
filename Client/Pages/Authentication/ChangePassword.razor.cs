@@ -8,7 +8,7 @@ namespace Client.Pages.Authentication
     [Authorize]
     public partial class ChangePassword
     {
-        private ChangePasswordRequestDTO ChangePasswordRequest { get; set; }
+        private ChangePasswordRequestDTO ChangePasswordRequest = new();
         public bool IsProcessing { get; set; } = false;
         public bool ShowChangePasswordErrors { get; set; }
         public IEnumerable<string> Errors { get; set; }
