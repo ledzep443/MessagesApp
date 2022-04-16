@@ -1,0 +1,26 @@
+﻿@page "/allchat"
+@attribute [Authorize]
+
+
+<PageTitle>Chat</PageTitle>
+
+<div class="py-4 min-vh-100">
+    <div class="col-8 offset-2 min-vh-100">
+        <div class="card card-body d-flex flex-column min-vh-100">
+            @foreach (var message in messages)
+            {
+                <div class="row">
+                    <p>@message</p>
+                </div>
+            }
+            <div class="py-2 button-container text-center">
+                <div class="input-group col-auto">
+                    <input @bind="messageInput" type="text" size="50" class="form-control" placeholder="Send message..." />
+                    <button @onclick="SendMessage" disabled="@(!IsConnected)" class="text-right btn btn-outline-success input-group-append">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
