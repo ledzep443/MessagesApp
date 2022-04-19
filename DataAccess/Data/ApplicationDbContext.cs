@@ -22,5 +22,6 @@ namespace DataAccess.Data
         }
 
         public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<Chat> Chat { get; set; }
     }
 }
