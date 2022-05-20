@@ -8,7 +8,7 @@ namespace Business.Mapper
     {
         public MappingProfile()
         {
-            CreateMap<Chat, ChatDTO>().ReverseMap();
+            CreateMap<ChatMessage, ChatMessageDTO>().ReverseMap();
         }
     }
 }

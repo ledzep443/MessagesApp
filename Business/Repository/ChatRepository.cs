@@ -22,21 +22,21 @@ namespace Business.Repository
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ChatDTO>> GetChat(string roomName)
+        public async Task<IEnumerable<ChatMessageDTO>> GetChat(string roomName)
         {
-            var mappedChat = _mapper.Map<IEnumerable<Chat>, IEnumerable<ChatDTO>>(_context.Chat);
+            var mappedChat = _mapper.Map<IEnumerable<ChatMessage>, IEnumerable<ChatMessageDTO>>(_context.ChatMessages);
             return mappedChat.Where(x => x.RoomName == roomName);
         }
 
-        public async Task<ChatDTO> SaveChat(string roomName, ChatDTO chat)
+        public async Task<ChatMessageDTO> SaveChat(string roomName, ChatMessageDTO chat)
         {
             try
             {
-                var chatToSave = _mapper.Map<ChatDTO, Chat>(chat);
+                var chatToSave = _mapper.Map<ChatMessageDTO, ChatMessage>(chat);
                 chatToSave.RoomName = roomName;
-                var addedChat = _context.Chat.Add(chatToSave);
+                var addedChat = _context.ChatMessages.Add(chatToSave);
                 await _context.SaveChangesAsync();
-                return _mapper.Map<Chat, ChatDTO>(addedChat.Entity);
+                return _mapper.Map<ChatMessage, ChatMessageDTO>(addedChat.Entity);
 
             }
             catch (Exception ex)

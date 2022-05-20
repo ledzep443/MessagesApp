@@ -3,16 +3,18 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
 using Syncfusion.Blazor.RichTextEditor;
 
-namespace Client.Pages.Chat
+
+namespace Client.Pages.RealtimeChat
 {
     public partial class MainChat : IAsyncDisposable
     {
         private readonly NavigationManager NavigationManager;
         private readonly HttpClient _httpClient;
+        
         [CascadingParameter]
         private Task<AuthenticationState> authenticationState { get; set; }
         private HubConnection? hubConnection;
-        private List<string> messages = new();
+        private List<DataAccess.ChatMessage> messages = new();
         private string? messageInput;
 
         protected override async Task OnInitializedAsync()
@@ -26,7 +28,7 @@ namespace Client.Pages.Chat
             hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
             {
                 var encodedMessage = $"{user}: {message}";
-                messages.Add(encodedMessage);
+                //messages.Add(encodedMessage);
                 StateHasChanged();
             });
 

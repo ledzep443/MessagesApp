@@ -1,53 +1,8 @@
-﻿<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">Message Board</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-            </ul>
-            <form class="d-flex">
-                <ul class="navbar-nav">
-                    <AuthorizeView>
-                        <Authorized>
-                            <li class="nav-item p-0">
-                                <NavLink class="nav-link" href="changepassword">
-                                    <span class="p-2">
-                                        Hello, @context.User.Identity.Name
-                                    </span>
-                                </NavLink>
-                            </li>
-                            <li class="nav-item p-0">
-                                <NavLink class="nav-link" href="logout">
-                                    <span class="p-2">Logout</span>
-                                </NavLink>
-                            </li>
-                            <li class="nav-item p-0">
-                                <NavLink class="nav-link" href="allchat">
-                                    <span class="p-2">Chat</span>
-                                </NavLink>
-                            </li>
-                        </Authorized>
-                        <NotAuthorized>
-                            <li class="nav-item p-0">
-                                <NavLink class="nav-link" href="register">
-                                    <span class="p-2">Register</span>
-                                </NavLink>
-                            </li>
-                            <li class="nav-item p-0">
-                                <NavLink class="nav-link" href="login">
-                                    <span class="p-2">Login</span>
-                                </NavLink>
-                            </li>
-                        </NotAuthorized>
-                    </AuthorizeView>
-                </ul>
-            </form>
-        </div>
-    </div>
-</nav>
+﻿<MudNavMenu>
+    <MudNavLink Href="/" Icon="@Icons.Material.Outlined.Home">Home</MudNavLink>
+    <MudNavLink Href="/allchat" Icon="@Icons.Material.Outlined.Chat">Chat</MudNavLink>
+    <MudNavLink Href="/private" Icon="@Icons.Material.Outlined.ChatBubbleOutline">Private Message</MudNavLink>
+</MudNavMenu>
 
 
 @code {

@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class ChatDTO
+    public class ChatMessageDTO
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string? UserFromId { get; set; }
-        public UserDTO? UserFrom { get; set; }
         public string? UserToId { get; set; }
-        public UserDTO? UserTo { get; set; }
         public string RoomName { get; set; } = string.Empty;
         public string Message { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

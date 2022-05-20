@@ -9,9 +9,9 @@ namespace Business.Repository.IRepository
 {
     public interface IChatRepository
     {
-        public Task<IEnumerable<ChatDTO>> GetChat(string roomName);
+        public Task<IEnumerable<ChatMessageDTO>> GetChat(string roomName);
         //public Task<IEnumerable<ChatDTO>> GetPrivateChat(string userFrom, string userTo);
-        public Task<ChatDTO> SaveChat(string roomName, ChatDTO chat);
+        public Task<ChatMessageDTO> SaveChat(string roomName, ChatMessageDTO chat);
         //public Task<bool> SavePrivateChat(string userFrom, string userTo);
     }
 }

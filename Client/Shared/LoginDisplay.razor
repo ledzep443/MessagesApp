@@ -1,0 +1,15 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <div class="pa-4 justify-center my-4 mud-text-align-center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="changepassword">Hi, @context.User.Identity.Name!</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="logout">Log Out</MudButton>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="pa-4 justify-center my-4 mud-text-align-center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="register">Register</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" Link="login">Login</MudButton>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
