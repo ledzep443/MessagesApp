@@ -13,8 +13,7 @@ namespace Client.Pages.Authentication
         public string Errors { get; set; }
         [Inject]
         public IAuthenticationService _authService { get; set; }
-        [Inject]
-        public NavigationManager _navigationManager { get; set; }
+       
         public string ReturnUrl { get; set; }
         public async Task LoginUser()
         {

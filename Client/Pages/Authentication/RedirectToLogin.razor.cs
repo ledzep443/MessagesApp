@@ -8,8 +8,7 @@ namespace Client.Pages.Authentication
     {
         [CascadingParameter]
         public Task<AuthenticationState> _authState { get; set; }
-        [Inject]
-        public NavigationManager _navigationManager { get; set; }
+        
 
         bool notAuthorized { get; set; } = false;
 

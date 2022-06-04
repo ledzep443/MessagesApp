@@ -1,31 +1,72 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.SignalR.Client
+@using Client.Handlers;
 
-<MudThemeProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
-<MudLayout>
-    <MudAppBar Elevation="0">
-        <MudText Typo="Typo.h6" Class="ml-4">Message Boards</MudText>
-        <MudSpacer />
-        <LoginDisplay />
-    </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
-        <NavMenu />
-    </MudDrawer>
-    <MudMainContent>
-        <MudToolBar DisableGutters="true">
-            <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@(() => DrawerToggle())" Class="ml-3" />
-        </MudToolBar>
-        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
-            @Body
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>
+    <MudThemeProvider />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
+    <MudLayout>
+        <MudAppBar Elevation="0">
+            <MudText Typo="Typo.h6" Class="ml-4">Message Boards</MudText>
+            <MudSpacer />
+            <LoginDisplay />
+        </MudAppBar>
+        <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
+            <NavMenu />
+        </MudDrawer>
+        <MudMainContent>
+            <MudToolBar DisableGutters="true">
+                <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@(() => DrawerToggle())" Class="ml-3" />
+            </MudToolBar>
+            <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+                
+                    <CascadingValue Value="hubConnection">
+                        @Body
+                    </CascadingValue>
+                
+            </MudContainer>
+        </MudMainContent>
+    </MudLayout>
 
 @code {
     bool _drawerOpen = false;
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    private HubConnection hubConnection;
+    //[CascadingParameter] public AuthStateProvider _authStateProvider { get; set; }
+    private bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+    private string CurrentUserId;
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder().WithUrl(new Uri("https://localhost:7193/chatHub"), options =>
+        {
+            options.HttpMessageHandlerFactory = innerHandler => new IncludeRequestCredentialsHandler { InnerHandler = innerHandler };
+        }).Build();
+        await hubConnection.StartAsync();
+        hubConnection.On<string, string, string>("ReceiveChatNotification", (message, receiveUserId, senderUserId) =>
+        {
+            if (CurrentUserId == receiveUserId)
+            {
+                _snackbar.Add(message, Severity.Info, config =>
+                {
+                    config.VisibleStateDuration = 10000;
+                    config.HideTransitionDuration = 500;
+                    config.ShowTransitionDuration = 500;
+                    config.Action = "Chat?";
+                    config.ActionColor = Color.Info;
+                    config.Onclick = snackbar =>
+                    {
+                        _navigationManager.NavigateTo($"privateChat/{senderUserId}");
+                        return Task.CompletedTask;
+                    };
+                });
+            }
+        });
+        var state = await _authStateProvider.GetAuthenticationStateAsync();
+        var user = state.User;
+        CurrentUserId = user?.Claims?.Where(c => c.Type == "id").Select(a => a.Value).FirstOrDefault();
     }
 }

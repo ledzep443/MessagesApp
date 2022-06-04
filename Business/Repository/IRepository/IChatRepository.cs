@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using DataAccess;
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace Business.Repository.IRepository
 {
     public interface IChatRepository
     {
-        public Task<IEnumerable<ChatMessageDTO>> GetChat(string roomName);
-        //public Task<IEnumerable<ChatDTO>> GetPrivateChat(string userFrom, string userTo);
-        public Task<ChatMessageDTO> SaveChat(string roomName, ChatMessageDTO chat);
-        //public Task<bool> SavePrivateChat(string userFrom, string userTo);
+        public Task<IEnumerable<ChatMessage>> GetPublicChat();
+        public Task<IEnumerable<ChatMessage>> GetPrivateChat(string contactId);
+        public Task<ChatMessageDTO> SavePublicChat(ChatMessageDTO message);
+        public Task<ChatMessageDTO> SavePrivateChat(ChatMessageDTO message);
     }
 }

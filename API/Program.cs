@@ -1,7 +1,10 @@
 using API.Chat;
+using Business.Repository;
+using Business.Repository.IRepository;
 using DataAccess;
 using DataAccess.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +56,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("MessageBoardDbConnection")));
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
 
 var apiKey = builder.Configuration["APIKey"];
 var key = Encoding.ASCII.GetBytes(apiKey);
@@ -70,19 +75,20 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateAudience = true,
+        ValidateAudience = false,
         ValidateIssuer = true,
-        ValidAudience = "",
-        ValidIssuer = "",
+        ValidAudience = "https://localhost:7193",
+        ValidIssuer = "https://localhost:7193",
         ClockSkew = TimeSpan.Zero
     };
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddCors(options => options.AddPolicy("MessageBoard", builder =>
 {
-    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    builder.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin => true).AllowCredentials();
 }));
 
 var app = builder.Build();
@@ -115,6 +121,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<ChatHub>("/chat");
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

@@ -10,10 +10,12 @@ namespace Models
     public class ChatMessageDTO
     {
         public long Id { get; set; }
-        public string? UserFromId { get; set; }
-        public string? UserToId { get; set; }
-        public string RoomName { get; set; } = string.Empty;
+        public string? FromUserId { get; set; }
+        public virtual ApplicationUser? FromUser { get; set; }
+        public string? ToUserId { get; set; }
+        public virtual ApplicationUser? ToUser { get; set; }
+        public string RoomName { get; set; } = "public";
         public string Message { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public string CreatedDate { get; set; }
     }
 }

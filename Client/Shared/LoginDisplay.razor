@@ -1,15 +1,24 @@
 ﻿<AuthorizeView>
     <Authorized>
         <div class="pa-4 justify-center my-4 mud-text-align-center">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="changepassword">Hi, @context.User.Identity.Name!</MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="logout">Log Out</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Info" Link="changepassword">Hi, @context.User.Identity.Name!</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => LogOut())">Log Out</MudButton>
         </div>
     </Authorized>
     <NotAuthorized>
         <div class="pa-4 justify-center my-4 mud-text-align-center">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Link="register">Register</MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Secondary" Link="login">Login</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Info" Link="register">Register</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Success" Link="login">Login</MudButton>
         </div>
     </NotAuthorized>
 </AuthorizeView>
 
+@code {
+    [Inject]
+    IAuthenticationService _authService { get; set; }
+    private async void LogOut()
+    {
+        await _authService.Logout();
+        _navigationManager.NavigateTo("/");
+    }
+}

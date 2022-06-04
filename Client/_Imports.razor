@@ -13,6 +13,13 @@
 @using Client.Helper
 @using Client.Service.IService
 @using Client.Service
+@using Client.Manager
 @using Microsoft.AspNetCore.SignalR.Client
 @using Microsoft.AspNetCore.Authorization
 @using MudBlazor
+
+@inject NavigationManager _navigationManager
+@inject ISnackbar _snackbar
+@inject IJSRuntime _jsRuntime
+@inject AuthenticationStateProvider _authStateProvider
+@inject IChatManager _chatManager

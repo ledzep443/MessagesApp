@@ -14,8 +14,6 @@ namespace Client.Pages.Authentication
 
         [Inject]
         public IAuthenticationService _authService { get; set; } 
-        [Inject]
-        public NavigationManager _navigationManager { get; set; }
 
         public Register()
         {

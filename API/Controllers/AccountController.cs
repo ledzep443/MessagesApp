@@ -115,8 +115,8 @@ namespace API.Controllers
                 var claims = await GetClaims(user);
 
                 var tokenOptions = new JwtSecurityToken(
-                    issuer: "",
-                    audience: "",
+                    issuer: "https://localhost:7193",
+                    audience: "https://localhost:7158",
                     claims: claims,
                     expires: DateTime.Now.AddHours(6),
                     signingCredentials: signInCredentials);

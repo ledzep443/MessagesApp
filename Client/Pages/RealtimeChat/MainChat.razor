@@ -4,23 +4,31 @@
 
 <PageTitle>Chat</PageTitle>
 
-<div class="py-4 min-vh-100">
-    <div class="col-8 offset-2 min-vh-100">
-        <div class="card card-body d-flex flex-column min-vh-100">
+<div class="d-flex flex-grow-1 flex-row">
+    <MudPaper Elevation="25" Class="py-4 flex-grow-1">
+        <div class="flex-column flex-column px-4" style="max-height: 65vh; min-height: 65vh; overflow: scroll;" id="chatContainer">
             @foreach (var message in messages)
             {
-                <div class="row">
-                    <p>@message</p>
+                <div class="d-flex flex-row my-4">
+                    <div class="mr-4">
+                        <MudAvatar Color="Color.Secondary" Style="height: 50px; width: 50px;">@message.FromUser.Email.ToUpper().FirstOrDefault()</MudAvatar>
+                    </div>
+                    <div>
+                        <MudText Typo="Typo.body1">@message.FromUser.Email</MudText>
+                        <MudText Typo="Typo.caption" Style="font-size: xx-small!important;">@message.CreatedDate</MudText>
+                        <MudText Typo="Typo.body2" Style="padding: 15px; background-color: var(--mud-palette-background-grey); border-radius: 5px; margin-top: 5px;">@message.Message</MudText>
+                    </div>
                 </div>
             }
-            <div class="py-2 button-container text-center">
-                <div class="input-group col-auto">
-                    <input @bind="messageInput" type="text" size="50" class="form-control" placeholder="Send message..." />
-                    <button @onclick="SendMessage" disabled="@(!IsConnected)" class="text-right btn btn-outline-success input-group-append">Send</button>
-                </div>
-            </div>
+            
+                
+            
         </div>
-    </div>
+        <MudPaper Elevation="25" Class="d-flex flex-row px-2 mx-4">
+            <MudTextField T="string" Placeholder="Enter your message..." DisableUnderLine="true" Class="mt-n2 mx-4" @bind-Value="CurrentMessage" For="@(() => CurrentMessage)" />
+                <MudButton OnClick="SendMessage" StartIcon="@Icons.Material.Outlined.Send" Color="Color.Secondary" ButtonType="ButtonType.Button">Send</MudButton>
+        </MudPaper>
+    </MudPaper>
 </div>
 
 

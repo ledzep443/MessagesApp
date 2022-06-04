@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Business.Repository.IRepository;
 using DataAccess;
 using DataAccess.Data;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace Business.Repository
@@ -15,33 +18,97 @@ namespace Business.Repository
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ChatRepository(ApplicationDbContext context, IMapper mapper)
+        public ChatRepository(ApplicationDbContext context, IMapper mapper, IHttpContextAccessor contextAccessor)
         {
             _context = context;
             _mapper = mapper;
+            _httpContextAccessor = contextAccessor;
         }
 
-        public async Task<IEnumerable<ChatMessageDTO>> GetChat(string roomName)
+        public async Task<IEnumerable<ChatMessage>> GetPublicChat()
         {
-            var mappedChat = _mapper.Map<IEnumerable<ChatMessage>, IEnumerable<ChatMessageDTO>>(_context.ChatMessages);
-            return mappedChat.Where(x => x.RoomName == roomName);
+            var messages = await _context.ChatMessages
+                .Where(x => x.RoomName == "public")
+                .OrderBy(x => x.CreatedDate)
+                .Include(x => x.FromUser)
+                .Select(x => new ChatMessageDTO
+                {
+                    FromUserId = x.FromUserId,
+                    FromUser = x.FromUser,
+                    Message = x.Message,
+                    CreatedDate = x.CreatedDate,
+                    Id = x.Id,
+                    RoomName = x.RoomName
+                }).ToListAsync();
+            var mappedMessages = _mapper.Map<IEnumerable<ChatMessageDTO>, IEnumerable<ChatMessage>>(messages);
+            return mappedMessages;
         }
 
-        public async Task<ChatMessageDTO> SaveChat(string roomName, ChatMessageDTO chat)
+        public async Task<IEnumerable<ChatMessage>> GetPrivateChat(string contactId)
+        {
+            var userId = _httpContextAccessor.HttpContext.User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).Select(a => a.Value).FirstOrDefault();
+            var messages = await _context.ChatMessages
+                .Where(h => (h.FromUserId == contactId && h.ToUserId == userId) || (h.FromUserId == userId && h.ToUserId == contactId))
+                .Where(h => h.RoomName == "private")
+                .OrderBy(a => a.CreatedDate)
+                .Include(a => a.FromUser)
+                .Include(a => a.ToUser)
+                .Select(x => new ChatMessageDTO
+                {
+                    FromUserId = x.FromUserId,
+                    Message = x.Message,
+                    RoomName = x.RoomName,
+                    CreatedDate = x.CreatedDate,
+                    Id = x.Id,
+                    ToUserId = x.ToUserId,
+                    ToUser = x.ToUser,
+                    FromUser = x.FromUser,
+                }).ToListAsync();
+            var mappedMessages = _mapper.Map<IEnumerable<ChatMessageDTO>, IEnumerable<ChatMessage>>(messages);
+            return mappedMessages;
+        }
+
+        public async Task<ChatMessageDTO> SavePublicChat(ChatMessageDTO message)
         {
             try
             {
-                var chatToSave = _mapper.Map<ChatMessageDTO, ChatMessage>(chat);
-                chatToSave.RoomName = roomName;
-                var addedChat = _context.ChatMessages.Add(chatToSave);
+                var messageObj = _mapper.Map<ChatMessageDTO, ChatMessage>(message);
+                var userId = _httpContextAccessor.HttpContext.User.Claims.Where(a => a.Type == "Id").Select(a => a.Value).FirstOrDefault();
+                Console.WriteLine(userId);
+                messageObj.FromUserId = userId;
+                messageObj.CreatedDate = DateTime.Now.ToString("dd MM yyyy hh:mm tt");
+                messageObj.RoomName = "public";
+                var addedMessageObj = await _context.ChatMessages.AddAsync(messageObj);
                 await _context.SaveChangesAsync();
-                return _mapper.Map<ChatMessage, ChatMessageDTO>(addedChat.Entity);
+                return _mapper.Map<ChatMessage, ChatMessageDTO>(addedMessageObj.Entity);
 
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ChatMessageDTO> SavePrivateChat(ChatMessageDTO message)
+        {
+            try
+            {
+                var messageObj = _mapper.Map<ChatMessageDTO, ChatMessage>(message);
+                var userId = _httpContextAccessor.HttpContext.User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).Select(a => a.Value).FirstOrDefault();
+                messageObj.FromUserId = userId;
+                messageObj.CreatedDate = DateTime.Now.ToString("dd MM yyyy hh:mm tt");
+                messageObj.RoomName = "private";
+                messageObj.ToUser = await _context.Users.Where(user => user.Id == message.ToUserId).FirstOrDefaultAsync();
+                var addedMessageObj = await _context.ChatMessages.AddAsync(messageObj);
+                await _context.SaveChangesAsync();
+                return _mapper.Map<ChatMessage, ChatMessageDTO>(addedMessageObj.Entity);
+                
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
     }
