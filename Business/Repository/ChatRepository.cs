@@ -32,7 +32,7 @@ namespace Business.Repository
             var messages = await _context.ChatMessages
                 .Where(x => x.RoomName == "public")
                 .OrderBy(x => x.CreatedDate)
-                .Include(x => x.FromUser)
+                //.Include(x => x.FromUser)
                 .Select(x => new ChatMessageDTO
                 {
                     FromUserId = x.FromUserId,
@@ -48,7 +48,7 @@ namespace Business.Repository
 
         public async Task<IEnumerable<ChatMessage>> GetPrivateChat(string contactId)
         {
-            var userId = _httpContextAccessor.HttpContext.User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).Select(a => a.Value).FirstOrDefault();
+            var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(a => a.Type.Equals("Id", StringComparison.OrdinalIgnoreCase)).ToString();
             var messages = await _context.ChatMessages
                 .Where(h => (h.FromUserId == contactId && h.ToUserId == userId) || (h.FromUserId == userId && h.ToUserId == contactId))
                 .Where(h => h.RoomName == "private")
@@ -78,7 +78,7 @@ namespace Business.Repository
                 var userId = _httpContextAccessor.HttpContext.User.Claims.Where(a => a.Type == "Id").Select(a => a.Value).FirstOrDefault();
                 Console.WriteLine(userId);
                 messageObj.FromUserId = userId;
-                messageObj.CreatedDate = DateTime.Now.ToString("dd MM yyyy hh:mm tt");
+                messageObj.CreatedDate = DateTime.Now.ToString("dd MM yyyy HH:mm tt");
                 messageObj.RoomName = "public";
                 var addedMessageObj = await _context.ChatMessages.AddAsync(messageObj);
                 await _context.SaveChangesAsync();
@@ -98,7 +98,7 @@ namespace Business.Repository
                 var messageObj = _mapper.Map<ChatMessageDTO, ChatMessage>(message);
                 var userId = _httpContextAccessor.HttpContext.User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).Select(a => a.Value).FirstOrDefault();
                 messageObj.FromUserId = userId;
-                messageObj.CreatedDate = DateTime.Now.ToString("dd MM yyyy hh:mm tt");
+                messageObj.CreatedDate = DateTime.Now.ToString("dd MM yyyy HH:mm tt");
                 messageObj.RoomName = "private";
                 messageObj.ToUser = await _context.Users.Where(user => user.Id == message.ToUserId).FirstOrDefaultAsync();
                 var addedMessageObj = await _context.ChatMessages.AddAsync(messageObj);

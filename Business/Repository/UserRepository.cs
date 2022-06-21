@@ -26,15 +26,15 @@ namespace Business.Repository
         }
         public async Task<IEnumerable<ApplicationUser>> GetUsersAsync()
         {
-            var userId = _httpContext.HttpContext.User.Claims.Where(a => a.Type == ClaimTypes.Name).Select(a => a.Value).FirstOrDefault();
-            var allUsers = await _context.Users.Where(user => user.Name != userId).ToListAsync();
+            var userId = _httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type.Equals("Id", StringComparison.OrdinalIgnoreCase))?.Value;
+            var allUsers = await _context.Users.Where(user => user.Id != userId).ToListAsync();
             return allUsers;
 
         }
 
-        public async Task<ApplicationUser> GetUserDetailsAsync(string userName)
+        public async Task<ApplicationUser> GetUserDetailsAsync(string userId)
         {
-            var user = await _context.Users.Where(user => user.Name == userName).FirstOrDefaultAsync();
+            var user = await _context.Users.Where(user => user.Id == userId).FirstOrDefaultAsync();
             return user;
         }
     }

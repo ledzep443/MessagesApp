@@ -2,37 +2,31 @@
 
 <EditForm Model="SignUpRequest" OnValidSubmit="RegisterUser" class="pt-4">
     <DataAnnotationsValidator />
-    <div class="py-4">
-        <div class="form-group row">
-            <div class="col-6 offset-3">
-                <div class="card border">
-                    <div class="card-body px-lg-5 pt-4">
-                        <h3 class="col-12 text-success text-center py-2">
-                            <strong>Sign Up</strong>
-                        </h3>
+    <MudGrid Justify="Justify.Center">
+        <MudItem sm="12" md="6" lg="4">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6" Style="text-align: center">Sign Up</MudText>
                         @if (ShowRegistrationErrors && Errors != null)
                         {
                             <div>
                             @foreach (var error in Errors)
                             {
-                                <p class="text-danger text-center">@error</p>
+                                <MudText Color="Color.Error">@error</MudText>
                             }
                             </div>
                         }
 
                         <div class="py-2">
-                            <InputText @bind-Value="SignUpRequest.Name" class="form-control" placeholder="Name..." />
+                            <MudTextField @bind-Value="SignUpRequest.Name" class="form-control" Label="Name..." />
                             <ValidationMessage For="(() => SignUpRequest.Name)" />
                         </div>
                         <div class="py-2">
-                            <InputText @bind-Value="SignUpRequest.Email" class="form-control" placeholder="Email..." />
+                            <MudTextField @bind-Value="SignUpRequest.Email" InputType="InputType.Email" class="form-control" Label="Email..." />
                             <ValidationMessage For="(() => SignUpRequest.Email)" />
                         </div>
                         <div class="py-2 input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">+1</span>
-                            </div>
-                            <InputText @bind-Value="SignUpRequest.PhoneNumber" class="form-control" placeholder="Phone number..." />
+                            <MudTextField @bind-Value="SignUpRequest.PhoneNumber" class="form-control" Label="Phone number..." />
                             <ValidationMessage For="(() => SignUpRequest.PhoneNumber)" />
                         </div>
                         @*<div class="py-2">
@@ -41,23 +35,26 @@
                         </div>*@
                         <div class="form-row py-2">
                             <div class="col">
-                                <InputText @bind-Value="SignUpRequest.Password" type="password" id="password" placeholder="Password..." class="form-control" />
+                                <MudTextField @bind-Value="SignUpRequest.Password" InputType="InputType.Password" id="password" Label="Password..." class="form-control" />
                                 <ValidationMessage For="(() => SignUpRequest.Password)" />
                             </div>
                             <div class="col py-2">
-                                <InputText @bind-Value="SignUpRequest.ConfirmPassword" type="password" id="confirm" class="form-control" placeholder="Confirm password..." />
+                                <MudTextField @bind-Value="SignUpRequest.ConfirmPassword" InputType="InputType.Password" id="confirm" class="form-control" Label="Confirm password..." />
                                 <ValidationMessage For="(() => SignUpRequest.ConfirmPassword)" />
                             </div>
                         </div>
+                </MudCardContent>
+                <MudCardActions>
                         <hr style="background-color: aquamarine;" />
-                        <div class="py-2 text-center">
-                            <button type="submit" class="btn btn-success btn-block"><i class="bi bi-person-fill"></i>Register</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                        <MudContainer Style="text-align: center">
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined">
+                                <MudIcon Icon="@Icons.Filled.PersonAdd" Color="Color.Success"/>Register
+                            </MudButton>
+                        </MudContainer>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
 </EditForm>
 
 @code {

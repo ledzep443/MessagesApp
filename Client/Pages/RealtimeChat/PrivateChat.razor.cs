@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
 using Models;
+using System.Security.Claims;
 
 namespace Client.Pages.RealtimeChat
 {
@@ -24,7 +25,7 @@ namespace Client.Pages.RealtimeChat
                 {
                     Message = CurrentMessage,
                     ToUserId = ContactId,
-                    CreatedDate = DateTime.Now.ToString("dd MM yyyy hh:mm tt"),
+                    CreatedDate = DateTime.Now.ToString("dd MM yyyy HH:mm tt"),
                 };
                 await _chatManager.SaveMessageAsync(chatHistory, "private");
                 chatHistory.FromUserId = CurrentUserId;
@@ -58,31 +59,35 @@ namespace Client.Pages.RealtimeChat
                     {
                         messages.Add(new ChatMessageDTO { Message = message.Message, CreatedDate = message.CreatedDate, FromUser = new ApplicationUser() { Email = ContactEmail } });
                     }
-                    await _jsRuntime.InvokeAsync<string>("ScrollToBottom", "chatContainer");
+                    await _jsRuntime.InvokeVoidAsync("ScrollToBottom", "chatContainer");
                     StateHasChanged();
                 }
             });
             await GetUsersAsync();
             var state = await _authStateProvider.GetAuthenticationStateAsync();
             var user = state.User;
-            CurrentUserId = user.Claims.Where(a => a.Type == "Id").Select(a => a.Value).FirstOrDefault();
-            CurrentUserEmail = user.Claims.Where(a => a.Type == "name").Select(a => a.Value).FirstOrDefault();
-            Console.WriteLine($"{ContactEmail}, {CurrentUserEmail}");
-            if (!string.IsNullOrEmpty(ContactEmail))
+            CurrentUserId = user.Claims.FirstOrDefault(x => x.Type.Equals("Id", StringComparison.OrdinalIgnoreCase))?.Value.ToString();
+            //var userDetails = await _chatManager.GetUserDetailsAsync(CurrentUserId);
+            CurrentUserEmail = user.Claims.FirstOrDefault(x => x.Type.Equals("UserName", StringComparison.OrdinalIgnoreCase))?.Value.ToString();
+            Console.WriteLine($"{ContactEmail}, {CurrentUserId}, {CurrentUserEmail}");
+            if (!string.IsNullOrEmpty(ContactId))
             {
-                await LoadUserChat(ContactEmail);
+                await LoadUserChat(ContactId);
             }
         }
 
         public List<ApplicationUser> ChatUsers = new();
         [Parameter] public string ContactEmail { get; set; }
         [Parameter] public string ContactId { get; set; }
-        async Task LoadUserChat(string userName)
+        [Parameter] public ApplicationUser SelectedUser { get; set; }
+        public async Task LoadUserChat(string userId)
         {
-            var contact =  await _chatManager.GetUserDetailsAsync(userName);
-            ContactId = contact.Id;
-            ContactEmail = contact.Email;
-            _navigationManager.NavigateTo($"privateChat/{ContactEmail}");
+            Console.WriteLine(userId);
+            ContactId = userId;
+            _navigationManager.NavigateTo($"privateChat/{ContactId}");
+            var userDetail = await _chatManager.GetUserDetailsAsync(userId);
+            ContactEmail = userDetail.Email;
+            Console.WriteLine(userDetail.Email);
             messages = new List<ChatMessageDTO>();
             messages = await _chatManager.GetPrivateChatAsync(ContactId);
         }
@@ -93,7 +98,7 @@ namespace Client.Pages.RealtimeChat
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await _jsRuntime.InvokeAsync<string>("ScrollToBottom", "chatContainer");
+            await _jsRuntime.InvokeVoidAsync("ScrollToBottom", "chatContainer");
         }
     }
 }

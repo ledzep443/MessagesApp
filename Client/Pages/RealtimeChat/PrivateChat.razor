@@ -1,4 +1,4 @@
-﻿@page "/privateChat/{ContactEmail}"
+﻿@page "/privateChat/{ContactId}"
 @page "/privateChat"
 @attribute [Authorize]
 
@@ -45,11 +45,11 @@
             <MudList Clickable="true">
                 @foreach (var user in ChatUsers)
                 {
-                    <MudListItem Class="pa-0 px-2" OnClick="@(() => LoadUserChat(user.Email))">
+                    <MudListItem Class="pa-0 px-2" OnClick="@(() => LoadUserChat(user.Id))" Value="@user">
                         <div class="d-flex flex-row mt-n1 mb-n1">
                             <div class="mr-4">
                                 <MudBadge Class="my-2">
-                                    @if (user.Email == ContactEmail)
+                                    @if (user.Id == ContactId)
                                     {
                                         <MudAvatar Color="Color.Secondary" Style="height:50px; width: 50px">@user.Email.ToUpper().FirstOrDefault()</MudAvatar>
                                     }
@@ -61,7 +61,7 @@
                             </div>
                             <div>
                                 <MudText Typo="Typo.body2" Class="mt-3 mb-n2">@user.Email</MudText>
-                                <MudText Typo="Typo.caption" Style="font-size: xx-small!important;">@user.Name</MudText>
+                                <MudText Typo="Typo.caption" Style="font-size: xx-small!important;">@user.Id</MudText>
                             </div>
                         </div>
                     </MudListItem>

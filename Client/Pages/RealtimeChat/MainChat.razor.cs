@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace Client.Pages.RealtimeChat
 {
-    public partial class MainChat : IAsyncDisposable
+    public partial class MainChat
     {
         [CascadingParameter] public HubConnection hubConnection { get; set; }
         //[CascadingParameter] public AuthStateProvider _authStateProvider { get; set; }
@@ -49,13 +49,14 @@ namespace Client.Pages.RealtimeChat
 
 
             await LoadChat();
-
+            
         }
         
         async Task LoadChat()
         {
             messages = new List<ChatMessageDTO>();
             messages = await _chatManager.GetPublicChatAsync();
+            StateHasChanged();
         }
 
         private async Task SendMessage()
@@ -70,7 +71,7 @@ namespace Client.Pages.RealtimeChat
                 {
                     FromUserId = CurrentUserId,
                     Message = CurrentMessage,
-                    CreatedDate = DateTime.Now.ToString("dd MM yyyy hh:mm tt"),
+                    CreatedDate = DateTime.Now.ToString("dd MM yyyy HH:mm tt"),
                 };
                 Console.WriteLine(CurrentUserId);
                 
@@ -78,26 +79,20 @@ namespace Client.Pages.RealtimeChat
                 await hubConnection.SendAsync("SendAllMessageAsync", chatHistory);
                 messages = await _chatManager.GetPublicChatAsync();
                 CurrentMessage = string.Empty;
-                
+                StateHasChanged();
             }
-            StateHasChanged();
-            await _jsRuntime.InvokeAsync<string>("ScrollToBottom", "chatContainer");
+            
+            //await _jsRuntime.InvokeVoidAsync("ScrollToBottom", "chatContainer");
             StateHasChanged();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await _jsRuntime.InvokeAsync<string>("ScrollToBottom", "chatContainer");
-            StateHasChanged();
+            await _jsRuntime.InvokeVoidAsync("ScrollToBottom", "chatContainer");
+            
         }
 
-        public async ValueTask DisposeAsync()
-        {
-            if (hubConnection != null)
-            {
-                await hubConnection.DisposeAsync();
-            }
-        }
+        
     }
 
 }

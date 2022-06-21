@@ -2,35 +2,37 @@
 
 <EditForm Model="SignInRequest" OnValidSubmit="LoginUser">
     <DataAnnotationsValidator />
-    <div class="py-4">
-        <div class="row form-group">
-            <div class="col-6 offset-3">
-                <div class="card border">
-                    <div class="card-body px-lg-5 pt-4">
-                        <h3 class="col-12 text-success text-center py-2">
-                            <strong>Sign In</strong>
-                        </h3>
-                        @if (ShowSignInErrors)
-                        {
-                            <p class="text-center text-danger">@Errors</p>
-                        }
-                        <div class="py-2">
-                            <InputText @bind-Value="SignInRequest.UserName" id="email" placeholder="Email..." class="form-control mb-2" />
-                            <ValidationMessage For="(() => SignInRequest.UserName)"></ValidationMessage>
-                        </div>
-                        <div class="py-2">
-                            <InputText @bind-Value="SignInRequest.Password" type="password" placeholder="Password..." id="password" class="form-control mb-2" />
-                            <ValidationMessage For="(() => SignInRequest.Password)"></ValidationMessage>
-                        </div>
-                        <div class="py-2 text-center">
-                            <button type="submit" class="btn btn-success btn-block"><i class="bi bi-person-bounding-box"></i> Sign In</button>
-                            <a href="/register" class="btn btn-primary text-white m-2"><i class="bi bi-person-plus-fill"></i>Register as a new user</a>
-                        </div>
+    <MudGrid Justify="Justify.Center">
+        <MudItem sm="12" md="6" lg="4">
+            <MudCard>
+                <MudCardContent class="px-lg-5 pt-4 pa-4">
+                    <MudText Typo="Typo.h6" Style="text-align: center">Sign In</MudText>
+                    @if (ShowSignInErrors)
+                    {
+                        <MudText Color="Color.Error">@Errors</MudText>
+                    }
+                    <div class="py-2">
+                        <MudTextField @bind-Value="SignInRequest.UserName" id="email" Label="Email..." class="form-control mb-2" />
+                        <ValidationMessage For="(() => SignInRequest.UserName)"></ValidationMessage>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <div class="py-2">
+                        <MudTextField @bind-Value="SignInRequest.Password" InputType="InputType.Password" Label="Password..." id="password" class="form-control mb-2" />
+                        <ValidationMessage For="(() => SignInRequest.Password)"></ValidationMessage>
+                    </div>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudContainer Style="text-align: center">
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Outlined">
+                            <MudIcon Icon="@Icons.Filled.Login" Color="Color.Primary" /> Sign In
+                        </MudButton>
+                        <MudButton ButtonType="ButtonType.Button" Href="/register" Variant="Variant.Outlined">
+                            <MudIcon Icon="@Icons.Filled.PersonAdd" Color="Color.Success" /> Register as a new user
+                        </MudButton>
+                    </MudContainer>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
 </EditForm>
 
 

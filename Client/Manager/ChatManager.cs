@@ -32,7 +32,8 @@ namespace Client.Manager
         public async Task<ApplicationUser> GetUserDetailsAsync(string userId)
         {
             await SetAuthenticationHeader();
-            return await _httpClient.GetFromJsonAsync<ApplicationUser>("api/Chat/users/{userId}");
+            var result = await _httpClient.GetFromJsonAsync<ApplicationUser>($"api/Chat/users/{userId}");
+            return result;
         }
 
         public async Task<List<ChatMessageDTO>> GetPublicChatAsync()
@@ -50,7 +51,7 @@ namespace Client.Manager
         public async Task SaveMessageAsync(ChatMessageDTO chatMessage, string roomName)
         {
             await SetAuthenticationHeader();
-            var user = await GetUserDetailsAsync();
+            var user = await GetLocalUserDetailsAsync();
             chatMessage.FromUserId = user.Id;
             await _httpClient.PostAsJsonAsync($"api/Chat/{roomName}", chatMessage);
         }
@@ -63,7 +64,7 @@ namespace Client.Manager
             return true;
         }
 
-        private async Task<UserDTO> GetUserDetailsAsync()
+        private async Task<UserDTO> GetLocalUserDetailsAsync()
         {
             return await _localStorage.GetItemAsync<UserDTO>("UserDetails");
         }
