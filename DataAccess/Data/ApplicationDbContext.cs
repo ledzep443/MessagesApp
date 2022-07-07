@@ -39,5 +39,6 @@ namespace DataAccess.Data
 
         public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<Issue> Issues { get; set; }
     }
 }
