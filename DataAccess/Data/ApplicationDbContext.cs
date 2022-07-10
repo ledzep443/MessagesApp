@@ -35,6 +35,14 @@ namespace DataAccess.Data
                     .HasForeignKey(d => d.ToUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
+            builder.Entity<Issue>(entity =>
+            {
+                entity.HasOne(d => d.AssignedUser)
+                    .WithMany(p => p.AssignedIssues)
+                    .HasForeignKey(d => d.AssignedUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+            
         }
 
         public DbSet<ApplicationUser> Users { get; set; }
