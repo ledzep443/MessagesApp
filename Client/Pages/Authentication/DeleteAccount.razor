@@ -1,0 +1,14 @@
+﻿@page "/delete-account"
+
+<MudGrid sm="12" md="6" lg="4" Justify="Justify.Center">
+    <MudPaper Elevation="20" Height="300px" Style="align-items: center; justify-content: center; display: block; margin-left: auto; margin-right: auto; text-align: center" class="text-center">
+        <MudText Typo="Typo.h6" class="text-center" Style="margin-top: 10px">Delete Account</MudText>
+        <MudContainer Style="margin-top: 75px; margin-bottom: 75px; text-align: center;">
+            <MudCheckBox T="bool" @bind-Checked="ConfirmDeleteAccount" Required="ConfirmDeleteAccount" Label="Confirm I want to delete my account" Style="margin-right: auto; margin-left: auto;"/>
+        </MudContainer>
+        <MudContainer Style="margin-bottom: auto; text-align: center">
+            <MudButton OnClick="() => DeleteUserAccount()" Color="Color.Error" Variant="Variant.Filled" Disabled="!ConfirmDeleteAccount">Delete my account</MudButton>
+
+        </MudContainer>
+    </MudPaper>
+</MudGrid>

@@ -7,25 +7,28 @@
     <MudSnackbarProvider />
     <MudLayout>
         <MudAppBar Elevation="0">
-            <MudText Typo="Typo.h6" Class="ml-4">Message Boards</MudText>
-            <MudSpacer />
-            <LoginDisplay />
+            <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@(() => DrawerToggle())" Class="ml-3" />
+            <MudText Typo="Typo.h6" Class="ml-4">Messages</MudText>
+            <MudSpacer/>
+            <LoginDisplay/>
         </MudAppBar>
         <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
             <NavMenu />
         </MudDrawer>
         <MudMainContent>
-            <MudToolBar DisableGutters="true">
-                <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@(() => DrawerToggle())" Class="ml-3" />
-            </MudToolBar>
             <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
                 
-                    <CascadingValue Value="hubConnection">
-                        @Body
-                    </CascadingValue>
+                <CascadingValue Value="hubConnection">
+                    @Body
+                </CascadingValue>
                 
             </MudContainer>
         </MudMainContent>
+        <MudAppBar Bottom="true" Fixed="true">
+            <MudSpacer />
+            <MudLink Href="terms" Color="Color.Inherit" Style="margin-right: 10px">Terms of Use</MudLink>
+            <MudLink Href="privacy" Color="Color.Inherit">Privacy Policy</MudLink>
+        </MudAppBar>
     </MudLayout>
 
 @code {
@@ -41,7 +44,7 @@
     private string CurrentUserId;
     protected override async Task OnInitializedAsync()
     {
-        hubConnection = new HubConnectionBuilder().WithUrl(new Uri("https://localhost:7193/chatHub"), options =>
+        hubConnection = new HubConnectionBuilder().WithUrl(new Uri("https://messagesappapi.azurewebsites.net/chatHub"), options =>
         {
             options.HttpMessageHandlerFactory = innerHandler => new IncludeRequestCredentialsHandler { InnerHandler = innerHandler };
         }).Build();

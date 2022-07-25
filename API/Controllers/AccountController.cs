@@ -115,8 +115,8 @@ namespace API.Controllers
                 var claims = await GetClaims(user);
 
                 var tokenOptions = new JwtSecurityToken(
-                    issuer: "https://localhost:7193",
-                    audience: "https://localhost:7158",
+                    issuer: "https://messagesappapi.azurewebsites.net",
+                    audience: "https://messagesapp.azurewebsites.net",
                     claims: claims,
                     expires: DateTime.Now.AddDays(7),
                     signingCredentials: signInCredentials);

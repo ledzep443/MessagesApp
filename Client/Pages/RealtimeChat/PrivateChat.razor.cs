@@ -19,7 +19,7 @@ namespace Client.Pages.RealtimeChat
         private List<ChatMessageDTO> messages = new();
         private async Task SubmitAsync()
         {
-            if (!string.IsNullOrEmpty(CurrentMessage) && !string.IsNullOrEmpty(ContactEmail))
+            if (!string.IsNullOrEmpty(CurrentMessage) && !string.IsNullOrEmpty(ContactName))
             {
                 var chatHistory = new ChatMessageDTO()
                 {
@@ -38,7 +38,7 @@ namespace Client.Pages.RealtimeChat
         {
             if(hubConnection == null)
             {
-                hubConnection = new HubConnectionBuilder().WithUrl(new Uri("https://localhost:7193/chatHub"), options => { 
+                hubConnection = new HubConnectionBuilder().WithUrl(new Uri("https://messagesappapi.azurewebsites.net:7193/chatHub"), options => { 
                     options.HttpMessageHandlerFactory = innerHandler => new IncludeRequestCredentialsHandler { InnerHandler = innerHandler };
                 }).Build();
             }
@@ -57,7 +57,7 @@ namespace Client.Pages.RealtimeChat
                     }
                     else if ((ContactId == message.FromUserId && CurrentUserId == message.ToUserId))
                     {
-                        messages.Add(new ChatMessageDTO { Message = message.Message, CreatedDate = message.CreatedDate, FromUser = new ApplicationUser() { Email = ContactEmail } });
+                        messages.Add(new ChatMessageDTO { Message = message.Message, CreatedDate = message.CreatedDate, FromUser = new ApplicationUser() { Email = ContactName } });
                     }
                     await _jsRuntime.InvokeVoidAsync("ScrollToBottom", "chatContainer");
                     StateHasChanged();
@@ -69,7 +69,7 @@ namespace Client.Pages.RealtimeChat
             CurrentUserId = user.Claims.FirstOrDefault(x => x.Type.Equals("Id", StringComparison.OrdinalIgnoreCase))?.Value.ToString();
             //var userDetails = await _chatManager.GetUserDetailsAsync(CurrentUserId);
             CurrentUserEmail = user.Claims.FirstOrDefault(x => x.Type.Equals("UserName", StringComparison.OrdinalIgnoreCase))?.Value.ToString();
-            Console.WriteLine($"{ContactEmail}, {CurrentUserId}, {CurrentUserEmail}");
+            //Console.WriteLine($"{ContactName}, {CurrentUserId}, {CurrentUserEmail}");
             if (!string.IsNullOrEmpty(ContactId))
             {
                 await LoadUserChat(ContactId);
@@ -77,7 +77,7 @@ namespace Client.Pages.RealtimeChat
         }
 
         public List<ApplicationUser> ChatUsers = new();
-        [Parameter] public string ContactEmail { get; set; }
+        [Parameter] public string ContactName { get; set; }
         [Parameter] public string ContactId { get; set; }
         [Parameter] public ApplicationUser SelectedUser { get; set; }
         public async Task LoadUserChat(string userId)
@@ -86,8 +86,8 @@ namespace Client.Pages.RealtimeChat
             ContactId = userId;
             _navigationManager.NavigateTo($"privateChat/{ContactId}");
             var userDetail = await _chatManager.GetUserDetailsAsync(userId);
-            ContactEmail = userDetail.Email;
-            Console.WriteLine(userDetail.Email);
+            ContactName = userDetail.Name;
+            //Console.WriteLine(userDetail.Email);
             messages = new List<ChatMessageDTO>();
             messages = await _chatManager.GetPrivateChatAsync(ContactId);
         }

@@ -21,7 +21,8 @@ builder.Services.AddSyncfusionBlazor(options => { options.IgnoreScriptIsolation 
 builder.Services.AddMudServices(c => { c.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight; });
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddAuthorizationCore();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7193") });
+var apiBaseUrl = builder.Configuration["ApiBaseAddress"];
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://messagesappapi.azurewebsites.net") });
 builder.Services.AddScoped<IncludeRequestCredentialsHandler>();
 //builder.Services.AddHttpClient("WebAPI", client => client.BaseAddress = new Uri("https://localhost:7193")).AddHttpMessageHandler<IncludeRequestCredentialsHandler>();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();

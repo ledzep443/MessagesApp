@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -42,7 +43,17 @@ namespace Business.Repository
                     Id = x.Id,
                     RoomName = x.RoomName
                 }).ToListAsync();
-            var mappedMessages = _mapper.Map<IEnumerable<ChatMessageDTO>, IEnumerable<ChatMessage>>(messages);
+            var recentMessages = new List<ChatMessageDTO>();
+            foreach (var message in messages)
+            {
+                if (DateTime.ParseExact(message.CreatedDate, "dd MM yyyy HH:mm tt", CultureInfo.CurrentCulture) >
+                    DateTime.Now.AddHours(-1))
+                {
+                    recentMessages.Add(message);
+                }
+            }
+            //var recentMessages = messages.FindAll(message => DateTime.ParseExact(message.CreatedDate, "dd MM yyyy HH:mm tt", CultureInfo.InvariantCulture) > DateTime.Now.AddHours(-1));
+            var mappedMessages = _mapper.Map<IEnumerable<ChatMessageDTO>, IEnumerable<ChatMessage>>(recentMessages);
             return mappedMessages;
         }
 

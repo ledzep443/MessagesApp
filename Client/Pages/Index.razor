@@ -1,9 +1,12 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
+<MudText Typo="Typo.h3" Style="display: block;">Welcome to Messages App.</MudText>
+<AuthorizeView>
+    
+    <NotAuthorized>
+        <MudText Typo="Typo.h6">Please create an account or log in to access chat.</MudText>
+    </NotAuthorized>
+</AuthorizeView>
 

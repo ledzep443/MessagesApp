@@ -1,7 +1,7 @@
 ﻿<AuthorizeView>
     <Authorized>
         <div class="pa-4 justify-center my-4 mud-text-align-center">
-            <MudButton Variant="Variant.Filled" Color="Color.Info" Link="changepassword">Hi, @context.User.Identity.Name!</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Info" Link="account">Hi, @context.User.Identity.Name!</MudButton>
             <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => LogOut())">Log Out</MudButton>
         </div>
     </Authorized>

@@ -27,7 +27,7 @@ namespace Client.Pages.RealtimeChat
             {
 
                 hubConnection = new HubConnectionBuilder()
-                    .WithUrl(new Uri("https://localhost:7193/chatHub"), options => { 
+                    .WithUrl(new Uri("https://messagesappapi.azurewebsites.net/chatHub"), options => { 
                         options.HttpMessageHandlerFactory = innerHandler => new IncludeRequestCredentialsHandler { InnerHandler = innerHandler };
                     })
                     .Build();
@@ -44,7 +44,7 @@ namespace Client.Pages.RealtimeChat
             });
             var state = await _authStateProvider.GetAuthenticationStateAsync();
             var user = state.User;
-            CurrentUserId = user.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).Select(a => a.Value).FirstOrDefault();
+            CurrentUserId = user.Claims.FirstOrDefault(x => x.Type.Equals("Id", StringComparison.OrdinalIgnoreCase))?.Value.ToString();
             CurrentUserEmail = user.Claims.Where(a => a.Type == "name").Select(a => a.Value).FirstOrDefault();
 
 

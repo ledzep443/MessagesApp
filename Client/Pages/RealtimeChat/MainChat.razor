@@ -11,10 +11,10 @@
             {
                 <div class="d-flex flex-row my-4">
                     <div class="mr-4">
-                        <MudAvatar Color="Color.Secondary" Style="height: 50px; width: 50px;">@message.FromUser.Email.ToUpper().FirstOrDefault()</MudAvatar>
+                        <MudAvatar Color="Color.Secondary" Style="height: 50px; width: 50px;">@message.FromUser.Name.ToUpper().FirstOrDefault()</MudAvatar>
                     </div>
                     <div>
-                        <MudText Typo="Typo.body1">@message.FromUser.Email</MudText>
+                        <MudText Typo="Typo.body1">@message.FromUser.Name</MudText>
                         <MudText Typo="Typo.caption" Style="font-size: xx-small!important;">@message.CreatedDate</MudText>
                         <MudText Typo="Typo.body2" Style="padding: 15px; background-color: var(--mud-palette-background-grey); border-radius: 5px; margin-top: 5px;">@message.Message</MudText>
                     </div>

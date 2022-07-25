@@ -80,8 +80,8 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateAudience = false,
         ValidateIssuer = true,
-        ValidAudience = jwtAudience,
-        ValidIssuer = jwtIssuer,
+        ValidAudience = "https://messagesapp.azurewebsites.net",
+        ValidIssuer = "https://messagesappapi.azurewebsites.net",
         ClockSkew = TimeSpan.Zero
     };
 });
