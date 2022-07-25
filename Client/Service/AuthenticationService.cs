@@ -80,6 +80,29 @@ namespace Client.Service
             }
         }
 
+        public async Task<DeleteAccountResponseDTO> DeleteAccount(DeleteAccountRequestDTO deleteAccountRequest)
+        {
+            var content = JsonConvert.SerializeObject(deleteAccountRequest);
+            var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("api/Account/DeleteAccount", bodyContent);
+            var contentTemp = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<DeleteAccountResponseDTO>(contentTemp);
+
+            if (response.IsSuccessStatusCode && result != null)
+            {
+                return new DeleteAccountResponseDTO() { IsAccountSuccessfullyDeleted = true };
+            }
+            else
+            {
+                return new DeleteAccountResponseDTO()
+                {
+                    IsAccountSuccessfullyDeleted = false,
+                    Errors = result.Errors
+                };
+            }
+            
+        }
+
         public async Task<SignUpResponseDTO> SignUp(SignUpRequestDTO signUpRequest)
         {
             var content = JsonConvert.SerializeObject(signUpRequest);

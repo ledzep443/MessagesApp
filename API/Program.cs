@@ -62,6 +62,9 @@ builder.Services.AddScoped<IChatRepository, ChatRepository>();
 var apiKey = builder.Configuration["APIKey"];
 var key = Encoding.ASCII.GetBytes(apiKey);
 
+var jwtIssuer = builder.Configuration.GetValue<string>("Issuer");
+var jwtAudience = builder.Configuration.GetValue<string>("Audience");
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -77,8 +80,8 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateAudience = false,
         ValidateIssuer = true,
-        ValidAudience = "https://localhost:7193",
-        ValidIssuer = "https://localhost:7193",
+        ValidAudience = jwtAudience,
+        ValidIssuer = jwtIssuer,
         ClockSkew = TimeSpan.Zero
     };
 });

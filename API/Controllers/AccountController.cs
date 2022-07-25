@@ -118,7 +118,7 @@ namespace API.Controllers
                     issuer: "https://localhost:7193",
                     audience: "https://localhost:7158",
                     claims: claims,
-                    expires: DateTime.Now.AddHours(6),
+                    expires: DateTime.Now.AddDays(7),
                     signingCredentials: signInCredentials);
 
                 var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
@@ -170,6 +170,36 @@ namespace API.Controllers
                 return BadRequest(new ChangePasswordResponseDTO
                 {
                     IsPasswordSuccessfullyChanged = false,
+                    Errors = result.Errors.Select(u => u.Description)
+                });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAccount(DeleteAccountRequestDTO deleteAccountRequestDTO)
+        {
+            if (deleteAccountRequestDTO == null || !ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var userToDelete = await _userManager.FindByIdAsync(deleteAccountRequestDTO.UserId);
+            if (userToDelete == null)
+            {
+                return NotFound();
+            }
+            var result = await _userManager.DeleteAsync(userToDelete);
+            if (result.Succeeded)
+            {
+                return Ok(new DeleteAccountResponseDTO
+                {
+                    IsAccountSuccessfullyDeleted = true,
+                });
+            }
+            else
+            {
+                return BadRequest(new DeleteAccountResponseDTO
+                {
+                    IsAccountSuccessfullyDeleted = false,
                     Errors = result.Errors.Select(u => u.Description)
                 });
             }
